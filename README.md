@@ -70,13 +70,22 @@ brainpack auto-detects your setup:
 
 | Platform | Detection |
 |----------|-----------|
-| `openclaw` | `SOUL.md` or `AGENTS.md` present |
-| `cursor` | `.cursor/` or `.cursor/rules/` present |
-| `claude-code` | `CLAUDE.md` or `.claude/` present |
-| `windsurf` | `.windsurf/` or `.windsurfrules` present |
-| `cline` | `.cline/` or `.clinerules` present |
-| `copilot` | `.github/copilot-instructions.md` present |
-| `generic` | Fallback for any folder of brain files |
+| `openclaw` | `SOUL.md` or `AGENTS.md` |
+| `cursor` | `.cursor/` or `.cursorrules` |
+| `claude-code` | `CLAUDE.md` or `.claude/` |
+| `windsurf` | `.windsurf/` or `.windsurfrules` |
+| `cline` | `.cline/` or `.clinerules` |
+| `roo-code` | `.roo/` or `.roorules` |
+| `codex` | `.codex/` or `codex.md` |
+| `aider` | `.aider.conf.yml` or `.aiderignore` |
+| `continue` | `.continue/` |
+| `goose` | `.goosehints` |
+| `devin` | `devin.md` |
+| `bolt` | `.bolt/` |
+| `replit` | `.replit` |
+| `copilot` | `.github/copilot-instructions.md` |
+| `amp` | `.amp/` |
+| `generic` | Fallback for any setup |
 
 ## The Manifest
 

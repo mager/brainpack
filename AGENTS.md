@@ -19,13 +19,10 @@ brainpack packages, versions, and transports the text files that define an AI ag
 
 ## Platform Detection
 
-Auto-detects by checking for marker files:
-- OpenClaw: `SOUL.md` / `AGENTS.md`
-- Cursor: `.cursor/`
-- Claude Code: `CLAUDE.md` / `.claude/`
-- Windsurf: `.windsurf/` / `.windsurfrules`
-- Cline: `.cline/` / `.clinerules`
-- Copilot: `.github/copilot-instructions.md`
+Auto-detects by checking for marker files. Supports 16 platforms:
+OpenClaw, Cursor, Claude Code, Windsurf, Cline, Roo Code, Codex, Aider, Continue.dev, Goose, Devin, Bolt, Replit, GitHub Copilot, Amp, and generic fallback.
+
+See README.md for the full detection table.
 
 ## Dev
 

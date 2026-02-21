@@ -25,7 +25,16 @@ const PLATFORM_IGNORE = {
   'claude-code': [],
   windsurf: [],
   cline: [],
+  'roo-code': [],
+  codex: [],
+  aider: [],
+  continue: [],
+  goose: [],
+  devin: [],
+  bolt: [],
+  replit: ['.cache/', '.upm/'],
   copilot: [],
+  amp: [],
   generic: [],
 };
 
@@ -84,12 +93,22 @@ function dateStamp() {
 
 function detectPlatform(dir = process.cwd()) {
   const has = (f) => fs.existsSync(path.join(dir, f));
-  if (has('SOUL.md') || has('AGENTS.md')) return 'openclaw';
-  if (has('.cursor') || has('.cursor/rules')) return 'cursor';
-  if (has('.claude') || has('CLAUDE.md')) return 'claude-code';
-  if (has('.windsurf') || has('.windsurfrules')) return 'windsurf';
-  if (has('.cline') || has('.clinerules')) return 'cline';
-  if (has('.github/copilot-instructions.md')) return 'copilot';
+  // Agent platforms — ordered most-specific to least-specific
+  if (has('SOUL.md') || has('AGENTS.md'))              return 'openclaw';
+  if (has('.cursor') || has('.cursorrules'))             return 'cursor';
+  if (has('.claude') || has('CLAUDE.md'))                return 'claude-code';
+  if (has('.windsurf') || has('.windsurfrules'))         return 'windsurf';
+  if (has('.cline') || has('.clinerules'))               return 'cline';
+  if (has('.roo') || has('.roorules'))                   return 'roo-code';
+  if (has('.codex') || has('codex.md'))                  return 'codex';
+  if (has('.aider.conf.yml') || has('.aiderignore'))     return 'aider';
+  if (has('.continue'))                                  return 'continue';
+  if (has('.goosehints'))                                return 'goose';
+  if (has('devin.md'))                                   return 'devin';
+  if (has('.bolt'))                                      return 'bolt';
+  if (has('.replit'))                                    return 'replit';
+  if (has('.github/copilot-instructions.md'))            return 'copilot';
+  if (has('.amp'))                                       return 'amp';
   return 'generic';
 }
 
@@ -100,7 +119,16 @@ function platformBrainPath(platform, dir = process.cwd()) {
     case 'claude-code': return '.';
     case 'windsurf': return '.';
     case 'cline': return '.';
+    case 'roo-code': return '.';
+    case 'codex': return '.';
+    case 'aider': return '.';
+    case 'continue': return '.continue';
+    case 'goose': return '.';
+    case 'devin': return '.';
+    case 'bolt': return '.';
+    case 'replit': return '.';
     case 'copilot': return '.';
+    case 'amp': return '.';
     default: return '.';
   }
 }
