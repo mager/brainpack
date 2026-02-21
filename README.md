@@ -2,12 +2,11 @@
 
 **Platform-agnostic CLI for managing portable AI agent brains.**
 
-[![npm version](https://img.shields.io/npm/v/brainpack.svg)](https://www.npmjs.com/package/brainpack)
 [![license](https://img.shields.io/npm/l/brainpack.svg)](LICENSE)
 
 Your AI agent has a brain — a folder of text files that define its personality, memory, skills, and instructions. **brainpack** makes it easy to version, sync, export, and move that brain across machines and platforms.
 
-Works with **OpenClaw**, **Cursor**, **Claude Code**, **Windsurf**, **Cline**, **GitHub Copilot**, or any custom setup. If your agent's brain is a folder of files, brainpack can manage it.
+Works with **OpenClaw**, **Cursor**, **Claude Code**, **Windsurf**, **Cline**, **Codex**, **Aider**, **GitHub Copilot**, and [12 more platforms](#platform-detection). If your agent's brain is a folder of files, brainpack can manage it.
 
 ## Install
 
@@ -47,6 +46,9 @@ brainpack export
 
 # Import on a new machine
 brainpack import brainpack-export-2026-02-21.tar.gz
+
+# Check what secrets need manual setup
+brainpack secrets
 ```
 
 ## Commands
@@ -96,7 +98,7 @@ brainpack auto-detects your setup:
 ```json
 {
   "name": "my-agent",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "platform": "openclaw",
   "brainPath": ".",
   "ignore": ["TOOLS.md", ".env", "*.key", ".openclaw/", ".pi/"],
