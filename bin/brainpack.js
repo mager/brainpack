@@ -433,8 +433,28 @@ program
   .description('Platform-agnostic CLI for managing portable AI agent brains')
   .version(pkg.version, '-v, --version');
 
-program.parse(process.argv);
-
 if (!process.argv.slice(2).length) {
+  log('');
+  log(chalk.cyan('  ╔══════════════════════════════════════╗'));
+  log(chalk.cyan('  ║') + '                                      ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '      ' + chalk.bold.white('🧠  b r a i n p a c k') + '           ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '                                      ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + chalk.dim('    Pack your agent\'s brain.') + '           ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + chalk.dim('    Ship it anywhere.') + '                 ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '                                      ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#ff6b6b')('  ╭──────╮ ') + '                    ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#ff6b6b')(' ╭┤ ') + chalk.hex('#ffa6c9')('░░░░░░') + chalk.hex('#ff6b6b')(' ├╮') + '                   ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#ff6b6b')(' │╰──────╯│') + '                   ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#ff6b6b')(' │ ') + chalk.hex('#ffd93d')('◉') + '    ' + chalk.hex('#ffd93d')('◉') + chalk.hex('#ff6b6b')(' │') + '  ' + chalk.dim('v' + pkg.version) + '             ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#ff6b6b')(' │  ') + chalk.hex('#6bcb77')('╰──╯') + chalk.hex('#ff6b6b')('  │') + '                   ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#ff6b6b')(' ╰───┬┬───╯') + '                   ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#4ecdc4')('   ╭─╯╰─╮') + '                     ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '    ' + chalk.hex('#4ecdc4')('   ╰─────╯') + '                     ' + chalk.cyan('║'));
+  log(chalk.cyan('  ║') + '                                      ' + chalk.cyan('║'));
+  log(chalk.cyan('  ╚══════════════════════════════════════╝'));
+  log('');
   program.outputHelp();
+  process.exit(0);
 }
+
+program.parse(process.argv);
