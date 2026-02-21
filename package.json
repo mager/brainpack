@@ -1,6 +1,6 @@
 {
   "name": "brainpack",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Platform-agnostic CLI for managing portable AI agent brains",
   "main": "bin/brainpack.js",
   "bin": {

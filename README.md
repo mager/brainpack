@@ -63,6 +63,8 @@ brainpack import brainpack-export-2026-02-21.tar.gz
 | `brainpack import <file>` | Import a brain archive |
 | `brainpack diff` | Show uncommitted changes and untracked files |
 | `brainpack status` | Show brain status, remote, platform, file count |
+| `brainpack secrets` | Show excluded secrets + setup guide for new machines |
+| `brainpack secrets --check` | Check which secret files exist vs missing |
 
 ## Platform Detection
 

@@ -454,6 +454,86 @@ program
     log('');
   });
 
+// brainpack secrets
+program
+  .command('secrets')
+  .description('Show excluded sensitive files and setup guide for new machines')
+  .option('--check', 'Check which secret files exist locally vs missing')
+  .action((opts) => {
+    const manifest = readManifest();
+    const cwd = process.cwd();
+
+    log('');
+    log(chalk.bold('🔐 Secrets Report'));
+    log(chalk.dim('─'.repeat(50)));
+    log('');
+
+    // Show what's excluded
+    log(chalk.bold('Excluded from brain (never shipped):'));
+    const ignored = manifest.ignore || [];
+    ignored.forEach((pattern) => {
+      const fullPath = path.join(cwd, pattern.replace(/\/$/, ''));
+      const exists = fs.existsSync(fullPath);
+      const status = exists
+        ? chalk.green('● present')
+        : chalk.yellow('○ missing');
+      log(`  ${status}  ${pattern}`);
+    });
+
+    log('');
+
+    // Platform-specific secrets guidance
+    const guides = {
+      openclaw: [
+        { file: 'TOOLS.md', desc: 'API keys, tokens, device-specific notes', action: 'Recreate manually or copy securely (AirDrop, scp)' },
+        { file: '~/.openclaw/openclaw.json', desc: 'Anthropic API key, model config, channels', action: 'Run `openclaw onboard` or copy from old machine' },
+        { file: '~/.openclaw/credentials/', desc: 'Channel auth tokens (Telegram, Discord, etc)', action: 'Re-authenticate each channel on new machine' },
+      ],
+      cursor: [
+        { file: '.cursor/settings.json', desc: 'API keys, editor preferences', action: 'Cursor re-creates on launch, re-enter API keys' },
+      ],
+      'claude-code': [
+        { file: '~/.claude/credentials', desc: 'Auth tokens', action: 'Run `claude login`' },
+      ],
+      codex: [
+        { file: '~/.codex/config.toml', desc: 'API keys, model settings', action: 'Recreate or copy securely' },
+      ],
+      generic: [],
+    };
+
+    const platformGuide = guides[manifest.platform] || guides.generic;
+
+    if (platformGuide.length > 0) {
+      log(chalk.bold(`Setup guide for ${chalk.cyan(manifest.platform)}:`));
+      log('');
+      platformGuide.forEach((item, i) => {
+        const filePath = item.file.startsWith('~') ? item.file : path.join(cwd, item.file);
+        const absPath = item.file.startsWith('~')
+          ? item.file.replace('~', process.env.HOME || '~')
+          : path.join(cwd, item.file);
+        const exists = fs.existsSync(absPath);
+        const marker = exists ? chalk.green('✓') : chalk.red('✗');
+
+        log(`  ${marker} ${chalk.bold(item.file)}`);
+        log(`    ${chalk.dim(item.desc)}`);
+        log(`    → ${item.action}`);
+        log('');
+      });
+    }
+
+    // Summary
+    log(chalk.dim('─'.repeat(50)));
+    log('');
+    log(chalk.bold('On a new machine:'));
+    log(`  1. ${chalk.cyan('brainpack pull')} or ${chalk.cyan('brainpack import')} — get your brain`);
+    log(`  2. ${chalk.cyan('brainpack secrets --check')} — see what's missing`);
+    log('  3. Manually set up the missing files listed above');
+    log('');
+    log(chalk.dim('Tip: Store secrets in a password manager (1Password, Bitwarden)'));
+    log(chalk.dim('     and pull them down on the new machine.'));
+    log('');
+  });
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 program
