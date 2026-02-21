@@ -16,7 +16,18 @@ const pkg = require('../package.json');
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const MANIFEST = 'brainpack.json';
-const DEFAULT_IGNORE = ['TOOLS.md', '.env', '*.key', '.openclaw/', '.pi/'];
+const DEFAULT_IGNORE = ['TOOLS.md', '.env', '*.key', '.openclaw/', '.pi/', 'node_modules/'];
+
+// Platform-specific ignore additions
+const PLATFORM_IGNORE = {
+  openclaw: ['TOOLS.md', '.openclaw/', '.pi/', '.agents/'],
+  cursor: ['.cursor/settings.json'],
+  'claude-code': [],
+  windsurf: [],
+  cline: [],
+  copilot: [],
+  generic: [],
+};
 
 function log(msg) { console.log(msg); }
 function ok(msg) { console.log(chalk.green('✓') + ' ' + msg); }
@@ -135,6 +146,7 @@ function collectBrainFiles(brainPath, ignoreList) {
       const relPath = rel ? rel + '/' + e.name : e.name;
       if (matchesIgnore(relPath, ignoreList)) continue;
       if (e.name === '.git') continue;
+      if (e.name === 'node_modules') continue;
       if (e.name === MANIFEST) continue;
       if (e.isDirectory()) walk(path.join(dir, e.name), relPath);
       else results.push(relPath);
@@ -163,12 +175,14 @@ program
     if (fs.existsSync(MANIFEST)) {
       warn(`${MANIFEST} already exists — skipping manifest creation.`);
     } else {
+      const platformIgnore = PLATFORM_IGNORE[platform] || [];
+      const ignore = [...new Set([...DEFAULT_IGNORE, ...platformIgnore])];
       const manifest = {
         name,
         version: '1.0.0',
         platform,
         brainPath,
-        ignore: [...DEFAULT_IGNORE],
+        ignore,
         created: new Date().toISOString(),
       };
       writeManifest(manifest);
