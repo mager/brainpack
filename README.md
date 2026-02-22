@@ -2,7 +2,8 @@
 
 **Platform-agnostic CLI for managing portable AI agent brains.**
 
-[![license](https://img.shields.io/npm/l/brainpack.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/@mager/brainpack.svg)](https://www.npmjs.com/package/@mager/brainpack)
+[![license](https://img.shields.io/npm/l/@mager/brainpack.svg)](LICENSE)
 
 Your AI agent has a brain — a folder of text files that define its personality, memory, skills, and instructions. **brainpack** makes it easy to version, sync, export, and move that brain across machines and platforms.
 
@@ -11,13 +12,13 @@ Works with **OpenClaw**, **Cursor**, **Claude Code**, **Windsurf**, **Cline**, *
 ## Install
 
 ```bash
-npm install -g brainpack
+npm install -g @mager/brainpack
 ```
 
 Or use directly:
 
 ```bash
-npx brainpack init
+npx @mager/brainpack init
 ```
 
 ## Quick Start
