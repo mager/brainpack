@@ -1,11 +1,17 @@
 {
   "name": "brainpack",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Platform-agnostic CLI for managing portable AI agent brains",
   "main": "bin/brainpack.js",
   "bin": {
     "brainpack": "bin/brainpack.js"
   },
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "echo \"No tests yet\" && exit 0"
   },
