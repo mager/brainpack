@@ -1,0 +1,15 @@
+{
+  "name": "brainpack",
+  "version": "1.0.0",
+  "platform": "generic",
+  "brainPath": ".",
+  "ignore": [
+    "TOOLS.md",
+    ".env",
+    "*.key",
+    ".openclaw/",
+    ".pi/",
+    "node_modules/"
+  ],
+  "created": "2026-02-21T22:15:25.189Z"
+}

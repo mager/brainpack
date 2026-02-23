@@ -1,6 +1,6 @@
 {
   "name": "@mager/brainpack",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Platform-agnostic CLI for managing portable AI agent brains",
   "main": "bin/brainpack.js",
   "bin": {
@@ -13,7 +13,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "node --test test/*.test.js"
   },
   "keywords": [
     "ai",
