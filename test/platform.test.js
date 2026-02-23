@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { detectPlatform, PLATFORM_IGNORE } from '../lib/platform.js';
+import { detectPlatform, platformBrainPath, PLATFORM_IGNORE } from '../lib/platform.js';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -108,5 +108,27 @@ describe('detectPlatform', () => {
     for (const p of expected) {
       assert.ok(p in PLATFORM_IGNORE, `${p} missing from PLATFORM_IGNORE`);
     }
+  });
+});
+
+describe('platformBrainPath', () => {
+  test('cursor returns .cursor/rules', () => {
+    assert.equal(platformBrainPath('cursor'), '.cursor/rules');
+  });
+
+  test('openclaw returns .', () => {
+    assert.equal(platformBrainPath('openclaw'), '.');
+  });
+
+  test('generic returns .', () => {
+    assert.equal(platformBrainPath('generic'), '.');
+  });
+
+  test('claude-code returns .', () => {
+    assert.equal(platformBrainPath('claude-code'), '.');
+  });
+
+  test('unknown platform defaults to .', () => {
+    assert.equal(platformBrainPath('some-unknown-platform'), '.');
   });
 });

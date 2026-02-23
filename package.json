@@ -1,6 +1,6 @@
 {
   "name": "@mager/brainpack",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Platform-agnostic CLI for managing portable AI agent brains",
   "main": "bin/brainpack.js",
   "bin": {
