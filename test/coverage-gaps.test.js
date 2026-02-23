@@ -1,6 +1,6 @@
 /**
  * Targeted tests to close remaining coverage gaps:
- *   - import.js  : no-conflict path + confirmOverwrite
+ *   - import.js  : no-conflict path + prompt injection (opts._promptFn)
  *   - snapshot.js: --restore path
  *   - diff.js    : non-empty diff output
  *   - push.js    : actual push to local bare remote
@@ -249,7 +249,7 @@ describe('cmdSnapshot with remote', () => {
 
 // ── import.js: no-conflict path (no --force) ─────────────────────────────────
 
-describe('cmdImport without --force', () => {
+describe('cmdImport without --force, no conflicts', () => {
   test('imports cleanly when no conflicts exist', async () => {
     writeManifestFile();
     fs.writeFileSync('SOUL.md', 'soul content');
@@ -262,7 +262,6 @@ describe('cmdImport without --force', () => {
     try {
       process.chdir(importDir);
       silenceConsole();
-      // No force, no conflicts → should import normally without prompting
       await cmdImport(archivePath, {});
       restoreConsole();
       assert.ok(fs.existsSync(path.join(importDir, 'brainpack.json')));
@@ -272,35 +271,68 @@ describe('cmdImport without --force', () => {
       fs.rmSync(importDir, { recursive: true, force: true });
     }
   });
+});
 
-  test('conflict detection runs and overwrites when user would confirm', async () => {
-    // Note: confirmOverwrite('these files') always returns true because
-    // fs.existsSync('these files') is false — readline branch is dead code.
-    // This test covers lines 37-45: conflict detection + warning output.
+// ── import.js: conflict prompt via opts._promptFn injection ──────────────────
+
+describe('cmdImport conflict prompt', () => {
+  test('warns about conflicts and overwrites when user confirms', async () => {
     writeManifestFile({ name: 'new-brain' });
     fs.writeFileSync('SOUL.md', 'new soul');
     silenceConsole();
     await cmdExport('out.tar.gz');
     restoreConsole();
-
     const archivePath = path.join(tmpDir, 'out.tar.gz');
-    const importDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bp-import-conflict-'));
-    try {
-      // Pre-create conflicting file — triggers the conflict detection branch
-      fs.writeFileSync(path.join(importDir, 'SOUL.md'), 'old soul');
 
+    const importDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bp-prompt-y-'));
+    try {
+      fs.writeFileSync(path.join(importDir, 'SOUL.md'), 'old soul');
       process.chdir(importDir);
+
       const logs = [];
       mock.method(console, 'log',   (m) => logs.push(String(m || '')));
       mock.method(console, 'error', () => {});
-      await cmdImport(archivePath, {}); // no --force, conflict exists
+      await cmdImport(archivePath, { _promptFn: async () => true });
       console.log.mock.restore();
       console.error.mock.restore();
 
-      // Should have warned about the conflict
       assert.ok(logs.some((l) => l.includes('already exist') || l.includes('SOUL.md')));
-      // confirmOverwrite('these files') returns true → file IS overwritten
       assert.equal(fs.readFileSync(path.join(importDir, 'SOUL.md'), 'utf8'), 'new soul');
+    } finally {
+      process.chdir(tmpDir);
+      fs.rmSync(importDir, { recursive: true, force: true });
+    }
+  });
+
+  test('aborts import when user declines', async () => {
+    writeManifestFile({ name: 'new-brain' });
+    fs.writeFileSync('SOUL.md', 'new soul');
+    silenceConsole();
+    await cmdExport('out.tar.gz');
+    restoreConsole();
+    const archivePath = path.join(tmpDir, 'out.tar.gz');
+
+    const importDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bp-prompt-n-'));
+    try {
+      fs.writeFileSync(path.join(importDir, 'SOUL.md'), 'old soul');
+      process.chdir(importDir);
+
+      let exitCalled = false;
+      mock.method(process, 'exit', (code) => {
+        exitCalled = true;
+        throw Object.assign(new Error('process.exit'), { code });
+      });
+      silenceConsole();
+      try {
+        await cmdImport(archivePath, { _promptFn: async () => false });
+      } catch (e) {
+        if (!e.message.includes('process.exit')) throw e;
+      }
+      restoreConsole();
+      process.exit.mock.restore();
+
+      assert.ok(exitCalled, 'expected process.exit on decline');
+      assert.equal(fs.readFileSync(path.join(importDir, 'SOUL.md'), 'utf8'), 'old soul');
     } finally {
       process.chdir(tmpDir);
       fs.rmSync(importDir, { recursive: true, force: true });
