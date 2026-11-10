@@ -12,10 +12,11 @@ import { cmdPull }     from '../lib/commands/pull.js';
 import { cmdSnapshot } from '../lib/commands/snapshot.js';
 import { cmdExport }   from '../lib/commands/export.js';
 import { cmdImport }   from '../lib/commands/import.js';
+import { cmdMemory }   from '../lib/commands/memory.js';
 import { cmdDiff }     from '../lib/commands/diff.js';
 import { cmdStatus }   from '../lib/commands/status.js';
 import { cmdSecrets }  from '../lib/commands/secrets.js';
-import { log }         from '../lib/utils.js';
+import { err, log }    from '../lib/utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -46,12 +47,19 @@ program
   .description('Create a named snapshot (git tag brain/<name>)')
   .option('--list', 'List all snapshots')
   .option('--restore <name>', 'Restore a snapshot')
+  .option('--local', 'Create the tag without pushing it')
   .action((name, opts) => cmdSnapshot(name, opts));
 
 program
   .command('export [file]')
   .description('Export brain as .tar.gz')
-  .action(async (file) => await cmdExport(file));
+  .option('--list', 'List archive entries without writing the archive')
+  .action((file, opts) => cmdExport(file, opts));
+
+program
+  .command('memory <file>')
+  .description('Save reviewed Markdown to MEMORY.md (use - for stdin)')
+  .action((file) => cmdMemory(file));
 
 program
   .command('import <file>')
@@ -105,4 +113,7 @@ if (!process.argv.slice(2).length) {
   process.exit(0);
 }
 
-program.parse(process.argv);
+program.parseAsync(process.argv).catch(error => {
+  err(error.message);
+  process.exitCode = 1;
+});
