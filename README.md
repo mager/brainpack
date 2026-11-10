@@ -59,15 +59,40 @@ brainpack secrets
 | `brainpack init` | Initialize directory as a brainpack (auto-detects platform) |
 | `brainpack push` | Stage, commit, and push brain to remote |
 | `brainpack pull` | Pull latest brain state from remote |
-| `brainpack snapshot <name>` | Tag current state as a named snapshot |
+| `brainpack snapshot <name>` | Tag the current commit as a named snapshot |
+| `brainpack snapshot <name> --local` | Tag the current commit without pushing it |
 | `brainpack snapshot --list` | List all snapshots |
 | `brainpack snapshot --restore <name>` | Restore a snapshot |
+| `brainpack memory <file>` | Save reviewed Markdown to `MEMORY.md` in the brain folder. Use `-` to read from stdin |
 | `brainpack export [file]` | Export brain as `.tar.gz` |
+| `brainpack export [file] --list` | Print the archive paths without writing the archive |
 | `brainpack import <file>` | Import a brain archive |
 | `brainpack diff` | Show uncommitted changes and untracked files |
 | `brainpack status` | Show brain status, remote, platform, file count |
 | `brainpack secrets` | Show excluded secrets + setup guide for new machines |
 | `brainpack secrets --check` | Check which secret files exist vs missing |
+
+## Move reviewed agent memory
+
+Save an accepted memory export from [dreaming-brain](https://github.com/mager/dreaming-brain) or supply your own Markdown file. Run these commands in a separate pack directory next to your `dreaming-brain` checkout:
+
+```bash
+brainpack init --platform generic
+(cd ../dreaming-brain && node bin/brain.js export) | brainpack memory -
+git add MEMORY.md brainpack.json .gitignore
+git diff --cached
+# Review the changes before you commit.
+git commit -m "Save reviewed memory"
+brainpack snapshot reviewed-memory --local
+brainpack export ../reviewed-memory.tar.gz --list
+brainpack export ../reviewed-memory.tar.gz
+```
+
+`brainpack memory reviewed.md` replaces `MEMORY.md` with the supplied file in one write. Blank or invalid UTF-8 input leaves the previous file in place. Brainpack does not run a model or commit the file. Review the diff for sensitive information before sharing the pack.
+
+A snapshot tags the current commit. Brainpack warns when the working tree has uncommitted changes. Use `--local` to keep the tag on this machine even if you configured `origin`.
+
+The export preview lists files from `brainPath` with their paths relative to the pack. Exports skip manifest ignore patterns, `.env*`, `*.pem`, `*.key`, symbolic links, and previous archives with the default `brainpack-export-*.tar.gz` name. Archive rules do not scan file contents or use Git's ignore rules. Check both the preview and the contents before you share an archive.
 
 ## Platform Detection
 
